@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SnapNames — Domain detail (preview)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --color-primary: #3266ea;
+      --color-primary-hover: #2857d6;
+      --color-primary-active: #2148c4;
+      --color-link: #2147a8;
+      --color-border-subtle: rgba(50, 102, 234, 0.16);
+      --color-surface-tint: #eef3ff;
+      --color-page: #f7f8fa;
+      --color-text: #111827;
+      --color-text-secondary: #6b7280;
+      --color-card: #ffffff;
+      --shadow-card: 0 1px 2px rgba(17, 24, 39, 0.06);
+      --radius-card: 12px;
+      --radius-input: 8px;
+      --max-width: 1240px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Inter", system-ui, -apple-system, Segoe UI, sans-serif;
+      background: var(--color-page);
+      color: var(--color-text);
+      font-size: 15px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      color: var(--color-link);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    /* ----- Header ----- */
+    .site-header {
+      background: var(--color-card);
+      border-bottom: 1px solid #e5e7eb;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .site-header__inner {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+
+    .logo {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+    }
+
+    .logo span:first-child .snap {
+      color: #ea580c;
+    }
+
+    .logo span:first-child .names {
+      color: var(--color-primary);
+    }
+
+    .logo .by {
+      font-size: 10px;
+      font-weight: 500;
+      color: #6b7280;
+    }
+
+    .search-wrap {
+      flex: 1;
+      min-width: 200px;
+      max-width: 360px;
+    }
+
+    .search {
+      width: 100%;
+      height: 40px;
+      border: 1px solid #e5e7eb;
+      border-radius: 999px;
+      padding: 0 14px 0 40px;
+      font: inherit;
+      outline: none;
+      background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' fill='none' stroke='%236b7280' stroke-width='2'%3E%3Ccircle cx='8' cy='8' r='6'/%3E%3Cpath d='M12 12l4 4'/%3E%3C/svg%3E") 12px center no-repeat;
+      transition: box-shadow 0.15s ease, border-color 0.15s ease;
+    }
+
+    .search:focus {
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(50, 102, 234, 0.25);
+    }
+
+    .util {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      font-size: 14px;
+      color: #374151;
+    }
+
+    .util a {
+      color: inherit;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .util a:hover {
+      color: var(--color-primary);
+      text-decoration: none;
+    }
+
+    .nav-row {
+      border-top: 1px solid #f3f4f6;
+      padding: 10px 24px;
+    }
+
+    .nav-row__inner {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      display: flex;
+      justify-content: center;
+      gap: 8px 28px;
+      flex-wrap: wrap;
+    }
+
+    .nav-row a {
+      color: #374151;
+      font-size: 14px;
+      font-weight: 500;
+      padding: 6px 0;
+      border-bottom: 2px solid transparent;
+      text-decoration: none;
+    }
+
+    .nav-row a:hover {
+      color: var(--color-primary);
+    }
+
+    .nav-row a.is-active {
+      color: var(--color-primary);
+      border-bottom-color: var(--color-primary);
+    }
+
+    /* ----- Main ----- */
+    .main {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 28px 24px 48px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 24px;
+    }
+
+    @media (max-width: 900px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .card {
+      background: var(--color-card);
+      border-radius: var(--radius-card);
+      box-shadow: var(--shadow-card);
+      border: 1px solid #f3f4f6;
+    }
+
+    .card__pad {
+      padding: 22px 24px;
+    }
+
+    .eyebrow {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--color-text-secondary);
+      margin: 0 0 6px;
+    }
+
+    /* Domain primary */
+    .domain-card__top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .domain-card__meta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      font-size: 14px;
+      color: var(--color-text-secondary);
+    }
+
+    .back {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--color-link);
+      font-weight: 500;
+      text-decoration: none;
+    }
+
+    .back:hover {
+      text-decoration: underline;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 5px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+      background: var(--color-surface-tint);
+      color: #1e3a8a;
+    }
+
+    .domain-name {
+      font-size: clamp(22px, 3.5vw, 30px);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin: 14px 0 12px;
+      word-break: break-word;
+    }
+
+    .tags {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 4px;
+    }
+
+    .tag {
+      font-size: 12px;
+      font-weight: 600;
+      padding: 5px 11px;
+      border-radius: 999px;
+      border: 1px solid #c7d8fa;
+      color: var(--color-link);
+      background: #fff;
+      cursor: default;
+      transition: background 0.15s ease;
+    }
+
+    .tag:hover {
+      background: var(--color-surface-tint);
+    }
+
+    .cta-col {
+      min-width: 220px;
+      text-align: right;
+    }
+
+    .cta-label {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--color-text-secondary);
+      margin-bottom: 8px;
+      text-align: right;
+    }
+
+    .bid-row {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      align-items: stretch;
+      flex-wrap: wrap;
+    }
+
+    .bid-input-wrap {
+      display: flex;
+      border: 1px solid #e5e7eb;
+      border-radius: var(--radius-input);
+      overflow: hidden;
+      background: #fff;
+      min-width: 140px;
+    }
+
+    .bid-input-wrap:focus-within {
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(50, 102, 234, 0.2);
+    }
+
+    .bid-input-wrap input {
+      border: none;
+      padding: 10px 12px;
+      font: inherit;
+      font-weight: 600;
+      width: 100%;
+      min-width: 0;
+      outline: none;
+    }
+
+    .bid-spin {
+      display: flex;
+      flex-direction: column;
+      border-left: 1px solid #e5e7eb;
+      background: #fafafa;
+    }
+
+    .bid-spin button {
+      border: none;
+      background: transparent;
+      padding: 0 10px;
+      cursor: pointer;
+      color: #6b7280;
+      font-size: 10px;
+      line-height: 1;
+    }
+
+    .bid-spin button:hover {
+      background: var(--color-surface-tint);
+      color: var(--color-primary);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 46px;
+      padding: 0 22px;
+      border-radius: var(--radius-input);
+      font-weight: 600;
+      font-size: 15px;
+      border: none;
+      cursor: pointer;
+      transition: background 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .btn--primary {
+      background: var(--color-primary);
+      color: #fff;
+      width: 100%;
+      margin-top: 10px;
+    }
+
+    .btn--primary:hover {
+      background: var(--color-primary-hover);
+    }
+
+    .btn--primary:active {
+      background: var(--color-primary-active);
+    }
+
+    .btn--ghost {
+      background: transparent;
+      color: var(--color-primary);
+      border: 1px solid var(--color-primary);
+      margin-top: 8px;
+      height: 40px;
+      font-size: 14px;
+    }
+
+    .btn--ghost:hover {
+      background: var(--color-surface-tint);
+    }
+
+    .notify {
+      margin-top: 18px;
+      padding-top: 16px;
+      border-top: 1px solid #f3f4f6;
+    }
+
+    .notify a {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 500;
+      font-size: 14px;
+    }
+
+    /* Score card — Brandability Snapshot */
+    .card.score-card {
+      background: var(--color-primary);
+      border-color: rgba(255, 255, 255, 0.14);
+      box-shadow: 0 1px 2px rgba(17, 24, 39, 0.06), 0 10px 28px rgba(50, 102, 234, 0.22);
+    }
+
+    .score-head {
+      margin: 0;
+      padding: 22px 24px 18px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: var(--radius-card) var(--radius-card) 0 0;
+    }
+
+    .score-head .eyebrow {
+      color: rgba(255, 255, 255, 0.72);
+    }
+
+    .score-head h2 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 700;
+      color: #ffffff;
+    }
+
+    .score-card .ring__value {
+      color: #ffffff;
+    }
+
+    .score-card .ring__label {
+      color: rgba(255, 255, 255, 0.78);
+    }
+
+    .score-card .ring svg circle:first-of-type {
+      stroke: rgba(255, 255, 255, 0.28);
+    }
+
+    .score-card .ring svg circle:last-of-type {
+      stroke: #ffffff;
+    }
+
+    .score-card__body {
+      padding-top: 18px;
+    }
+
+    .score-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px 12px;
+    }
+
+    @media (max-width: 500px) {
+      .score-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    .score-cell {
+      text-align: center;
+    }
+
+    .ring {
+      width: 72px;
+      height: 72px;
+      margin: 0 auto 8px;
+      position: relative;
+    }
+
+    .ring svg {
+      width: 100%;
+      height: 100%;
+      transform: rotate(-90deg);
+    }
+
+    .ring__value {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--color-text);
+    }
+
+    .ring__label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      color: var(--color-text-secondary);
+      text-transform: uppercase;
+      line-height: 1.25;
+    }
+
+    /* Detail rows */
+    .detail-card .card__pad {
+      padding-top: 18px;
+    }
+
+    .detail-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 14px 16px;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      background: #fff;
+      box-shadow: inset 4px 0 0 var(--color-primary);
+    }
+
+    .detail-row:last-child {
+      margin-bottom: 0;
+    }
+
+    .detail-row strong {
+      display: block;
+      font-size: 13px;
+      color: var(--color-text-secondary);
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .detail-row p {
+      margin: 0;
+      font-size: 15px;
+    }
+
+    /* Highlights */
+    .highlights h3 {
+      margin: 4px 0 16px;
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--color-text);
+    }
+
+    .hl-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .hl-list li {
+      display: flex;
+      gap: 14px;
+      margin-bottom: 14px;
+      align-items: flex-start;
+      color: var(--color-text);
+    }
+
+    .hl-num {
+      flex-shrink: 0;
+      width: 30px;
+      height: 30px;
+      border-radius: 999px;
+      background: var(--color-surface-tint);
+      color: var(--color-primary);
+      font-weight: 700;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .footer {
+      text-align: center;
+      padding: 24px;
+      font-size: 13px;
+      color: var(--color-link);
+    }
+
+    .footer a {
+      color: var(--color-link);
+    }
+
+    .footer span {
+      color: #d1d5db;
+      margin: 0 8px;
+    }
+
+    .preview-banner {
+      background: #1e293b;
+      color: #e2e8f0;
+      text-align: center;
+      padding: 8px 16px;
+      font-size: 13px;
+    }
+
+    .preview-banner strong {
+      color: #93c5fd;
+    }
+
+    .visually-hidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="preview-banner">
+    <strong>Static preview</strong> — SnapNames domain detail · tokens: primary <code style="background:#334155;padding:2px 6px;border-radius:4px;">#3266EA</code> · open this file in a browser
+  </div>
+
+  <header class="site-header">
+    <div class="site-header__inner">
+      <div class="logo">
+        <span><span class="snap">Snap</span><span class="names">[NAMES]</span></span>
+        <span class="by">By Network Solutions</span>
+      </div>
+      <div class="search-wrap">
+        <label class="visually-hidden" for="q">Search</label>
+        <input id="q" class="search" type="search" placeholder="Search domains…" />
+      </div>
+      <nav class="util" aria-label="Utility">
+        <a href="#">Support</a>
+        <a href="#">Cart</a>
+        <a href="#">Log In</a>
+      </nav>
+    </div>
+    <div class="nav-row">
+      <nav class="nav-row__inner" aria-label="Main">
+        <a href="#">Home</a>
+        <a href="#">Buyer Dashboard</a>
+        <a href="#">Inventory</a>
+        <a href="#" class="is-active">Financial Center</a>
+        <a href="#">Bulk Tools</a>
+        <a href="#">My Account</a>
+        <a href="#">How It Works</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="main">
+    <div class="grid">
+      <article class="card domain-card">
+        <div class="card__pad">
+          <div class="domain-card__top">
+            <div>
+              <div class="domain-card__meta">
+                <a class="back" href="#">← Back</a>
+                <span>Order by 22-Apr-2026</span>
+                <span class="badge">Available Soon</span>
+              </div>
+              <h1 class="domain-name">aprilsbest2461152-10.com</h1>
+              <div class="tags">
+                <span class="tag">Promotional</span>
+                <span class="tag">Seasonal</span>
+              </div>
+            </div>
+            <div class="cta-col">
+              <div class="cta-label">Pre-order Bid</div>
+              <div class="bid-row">
+                <div class="bid-input-wrap">
+                  <input type="text" value="$79.00" aria-label="Bid amount" />
+                  <div class="bid-spin" aria-hidden="true">
+                    <button type="button">▲</button>
+                    <button type="button">▼</button>
+                  </div>
+                </div>
+              </div>
+              <button type="button" class="btn btn--primary">Add To Cart</button>
+              <button type="button" class="btn btn--ghost">Set max bid</button>
+            </div>
+          </div>
+          <div class="notify">
+            <a href="#">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0" />
+              </svg>
+              Notifications
+            </a>
+          </div>
+        </div>
+      </article>
+
+      <article class="card score-card">
+        <div class="score-head">
+          <p class="eyebrow">Domain score</p>
+          <h2>Brandability Snapshot</h2>
+        </div>
+        <div class="card__pad score-card__body">
+          <div class="score-grid">
+            <div class="score-cell">
+              <div class="ring" data-pct="40">
+                <svg viewBox="0 0 72 72" aria-hidden="true">
+                  <circle cx="36" cy="36" r="30" fill="none" stroke="#e8edf7" stroke-width="6" />
+                  <circle cx="36" cy="36" r="30" fill="none" stroke="#3266ea" stroke-width="6"
+                    stroke-dasharray="188.5" stroke-dashoffset="113.1" stroke-linecap="round" />
+                </svg>
+                <span class="ring__value">40</span>
+              </div>
+              <div class="ring__label">Brandability</div>
+            </div>
+            <div class="score-cell">
+              <div class="ring" data-pct="50">
+                <svg viewBox="0 0 72 72">
+                  <circle cx="36" cy="36" r="30" fill="none" stroke="#e8edf7" stroke-width="6" />
+                  <circle cx="36" cy="36" r="30" fill="none" stroke="#3266ea" stroke-width="6"
+                    stroke-dasharray="188.5" stroke-dashoffset="94.25" stroke-linecap="round" />
+                </svg>
+                <span class="ring__value">50</span>
+              </div>
+              <div class="ring__label">Global Appeal</div>
+            </div>
+            <div class="score-cell">
+              <div class="ring">
+                <svg viewBox="0 0 72 72">
+                  <circle cx="36" cy="36" r="30" fill="none" stroke="#e8edf7" stroke-width="6" />
+                  <circle cx="36" cy="36" r="30" fill="none" stroke="#3266ea" stroke-width="6"
+                    stroke-dasharray="188.5" stroke-dashoffset="75.4" stroke-linecap="round" />
+                </svg>
+                <span class="ring__value">60</span>
+              </div>
+              <div class="ring__label">Industry Fit</div>
+            </div>
+            <div class="score-cell">
+              <div class="ring">
+                <svg viewBox="0 0 72 72">
+                  <circle cx="36" cy="36" r="30" fill="none" stroke="#e8edf7" stroke-width="6" />
+                  <circle cx="36" cy="36" r="30" fill="none" stroke="#3266ea" stroke-width="6"
+                    stroke-dasharray="188.5" stroke-dashoffset="56.55" stroke-linecap="round" />
+                </svg>
+                <span class="ring__value">65</span>
+              </div>
+              <div class="ring__label">Memorability</div>
+            </div>
+            <div class="score-cell">
+              <div class="ring">
+                <svg viewBox="0 0 72 72">
+                  <circle cx="36" cy="36" r="30" fill="none" stroke="#e8edf7" stroke-width="6" />
+                  <circle cx="36" cy="36" r="30" fill="none" stroke="#3266ea" stroke-width="6"
+                    stroke-dasharray="188.5" stroke-dashoffset="94.25" stroke-linecap="round" />
+                </svg>
+                <span class="ring__value">50</span>
+              </div>
+              <div class="ring__label">Length</div>
+            </div>
+            <div class="score-cell">
+              <div class="ring">
+                <svg viewBox="0 0 72 72">
+                  <circle cx="36" cy="36" r="30" fill="none" stroke="#e8edf7" stroke-width="6" />
+                  <circle cx="36" cy="36" r="30" fill="none" stroke="#3266ea" stroke-width="6"
+                    stroke-dasharray="188.5" stroke-dashoffset="37.7" stroke-linecap="round" />
+                </svg>
+                <span class="ring__value">80</span>
+              </div>
+              <div class="ring__label">Extension Fit</div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="card detail-card">
+        <div class="card__pad">
+          <p class="eyebrow">Domain details</p>
+          <div class="detail-row">
+            <div>
+              <strong>Registrar Info</strong>
+              <p><a href="#">whois</a></p>
+            </div>
+          </div>
+          <div class="detail-row">
+            <div>
+              <strong>Source</strong>
+              <p>Drop</p>
+            </div>
+          </div>
+          <div class="detail-row">
+            <div>
+              <strong>EstiBot Valuation</strong>
+              <p><a href="#">More information</a></p>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="card highlights">
+        <div class="card__pad">
+          <p class="eyebrow">Highlights</p>
+          <h3>Why this domain works</h3>
+          <ol class="hl-list">
+            <li>
+              <span class="hl-num">1</span>
+              <span>Includes a recognizable month name “April,” which can support seasonal campaigns.</span>
+            </li>
+            <li>
+              <span class="hl-num">2</span>
+              <span>.com extension aligns with broad trust and memorability expectations.</span>
+            </li>
+            <li>
+              <span class="hl-num">3</span>
+              <span>Structured naming pattern can fit inventory or promo listings cleanly.</span>
+            </li>
+            <li>
+              <span class="hl-num">4</span>
+              <span>Readable length for display in auction lists and emails.</span>
+            </li>
+            <li>
+              <span class="hl-num">5</span>
+              <span>Brandability signals are balanced across core scoring dimensions.</span>
+            </li>
+          </ol>
+        </div>
+      </article>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <a href="#">Legal</a><span>|</span><a href="#">Privacy Policy</a><span>|</span><a href="#">Terms of Use</a>
+  </footer>
+</body>
+</html>
